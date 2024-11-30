@@ -22,6 +22,7 @@ NewProjectAudioProcessor::NewProjectAudioProcessor()
                        )
 #endif
 {
+    addParameter (new juce::AudioParameterFloat("gain", "Gain", 0.0f, 1.0f, 1.0f));
 }
 
 NewProjectAudioProcessor::~NewProjectAudioProcessor()
@@ -151,12 +152,16 @@ void NewProjectAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     // the samples and the outer loop is handling the channels.
     // Alternatively, you can process the samples with the channels
     // interleaved by keeping the same state.
+    
+    juce::AudioProcessorParameter* gainParameter = getParameters()[0];
+    float gain = gainParameter->getValue();
+    
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
         auto* channelData = buffer.getWritePointer (channel);
         
         for (int i = 0; i < buffer.getNumSamples(); ++i) {
-            channelData[i] *= 0.2f; }
+            channelData[i] *= gain; }
     }
 }
 
